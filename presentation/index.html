@@ -1,4 +1,4 @@
-<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Beta cổ phiếu ngân hàng Việt Nam, tính lại · Bản trình bày</title><meta name="description" content="Mô hình chỉ số đơn cho 12 cổ phiếu ngân hàng so với VN30, 2020–2024: beta tính lại, kiểm định phần dư, danh mục EGP ngoài mẫu."><style>:root{--bg:#f5f0e6;--bg2:#ece5d4;--ink:#1a1a17;--mut:#6b665a;--card:#fffaf0;--line:#d9d1bf;--pap:#d6401f;--cor:#1f55d0;--amb:#c98a00;--grn:#158a5a;--pur:#7a4fc0;--acc:var(--cor);--hdr:56px}
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Rủi ro hệ thống của cổ phiếu ngân hàng Việt Nam · Bản trình bày</title><meta name="description" content="Mô hình chỉ số đơn cho 12 cổ phiếu ngân hàng so với VN30, 2020–2024: beta, kiểm định phần dư, danh mục EGP ngoài mẫu."><style>:root{--bg:#f5f0e6;--bg2:#ece5d4;--ink:#1a1a17;--mut:#6b665a;--card:#fffaf0;--line:#d9d1bf;--pap:#d6401f;--cor:#1f55d0;--amb:#c98a00;--grn:#158a5a;--pur:#7a4fc0;--acc:var(--cor);--hdr:56px}
 :root[data-theme=dark]{--bg:#121316;--bg2:#17181c;--ink:#ece8dc;--mut:#9a958a;--card:#1b1c20;--line:#2c2d33;--pap:#ff6a4a;--cor:#6b97ff;--amb:#f2b92a;--grn:#3fcf95;--pur:#b08cff}
 *{box-sizing:border-box}html{scroll-behavior:auto}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Segoe UI",system-ui,-apple-system,"Noto Sans","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
@@ -88,7 +88,7 @@ const eo=t=>1-Math.pow(1-t,3);
 const lerp=(a,b,t)=>a+(b-a)*t;
 const f=(x,d=2)=>(+x).toFixed(d).replace('.',LANG==='vi'?',':'.');
 const pc=(x,d=1)=>f(x*100,d)+'%';
-const ACTS=[['Dữ liệu','Data','--cor'],['Phát hiện','Finding','--pap'],['Beta đúng','True β','--cor'],['Rủi ro','Risk','--amb'],['Danh mục','Portfolio','--pur'],['Kết','Close','--grn']];
+const ACTS=[['Dữ liệu','Data','--cor'],['Beta','Beta','--cor'],['Rủi ro','Risk','--amb'],['Danh mục','Portfolio','--pur'],['Kết','Close','--grn']];
 const B=D.banks,T={};D.t.forEach(t=>T[t.b]=t);
 const mm=a=>[Math.min(...a),Math.max(...a)];
 const mp=(v,a,b,c,d)=>c+(v-a)/(b-a)*(d-c);
@@ -98,14 +98,14 @@ const SC=[];
 /* ---------- 1 COVER ---------- */
 SC.push({id:'cover',act:0,h:150,lay:'F',cover:1,steps:[],
 draw(p){
- const chips=B.map(b=>`<i><b>${b}</b><s>${f(T[b].pb)}</s>→<q>${f(T[b].beta)}</q></i>`).join('');
- const chips2=[...B].reverse().map(b=>`<i><b>${b}</b><s>R² ${f(T[b].pr2)}</s>→<q>${f(T[b].r2)}</q></i>`).join('');
+ const chips=B.map(b=>`<i><b>${b}</b><q>β ${f(T[b].beta)}</q></i>`).join('');
+ const chips2=[...B].reverse().map(b=>`<i><b>${b}</b><q>R² ${f(T[b].r2)}</q></i>`).join('');
  const n=Math.round(eo(seg(p,.05,.6))*8);
  return `<div class="cv">
  <div class="ey">${L('Mô hình chỉ số đơn · 12 ngân hàng · VN30 · 2020–2024','Single-index model · 12 banks · VN30 · 2020–2024')}</div>
- <h1>${L('Beta của 12 ngân hàng, <u>tính lại</u>','Twelve bank betas, <u>recomputed</u>')}</h1>
- <p>${L('Chuỗi “lợi suất” trong bài gốc là tỷ số hai logarit của giá, không phải lợi suất. Trang này chỉ ra điều đó làm lệch beta thế nào, rồi kiểm định lại mô hình và danh mục tối ưu.','The “return” series in the source paper is a ratio of two log prices, not a return. This page shows how that distorts beta, then re-tests the model and the optimal portfolio.')}</p>
- <div class="kp"><div><b>12</b><span>${L('cổ phiếu ngân hàng','bank stocks')}</span></div><div><b>${(D.n+1).toLocaleString(LANG==='vi'?'de-DE':'en-US')}</b><span>${L('phiên giao dịch','trading days')}</span></div><div><b><span style="font-size:inherit;color:var(--pap)">0</span>→<span style="font-size:inherit;color:var(--cor)">${n}</span>/12</b><span>${L('beta > 1: bài gốc → tính lại','β > 1: paper → recomputed')}</span></div></div>
+ <h1>${L('Rủi ro hệ thống của <u>12 ngân hàng</u> Việt Nam','Systematic risk of <u>12 Vietnamese banks</u>')}</h1>
+ <p>${L('Beta, phân rã rủi ro, kiểm định phần dư, độ ổn định theo giai đoạn và danh mục tối ưu EGP ngoài mẫu, ước lượng từ giá đóng cửa hằng ngày so với VN30.','Betas, risk decomposition, residual tests, stability across periods and an out-of-sample EGP portfolio, estimated from daily closing prices against VN30.')}</p>
+ <div class="kp"><div><b>12</b><span>${L('cổ phiếu ngân hàng','bank stocks')}</span></div><div><b>${(D.n+1).toLocaleString(LANG==='vi'?'de-DE':'en-US')}</b><span>${L('phiên giao dịch','trading days')}</span></div><div><b><span style="font-size:inherit;color:var(--cor)">${n}</span>/12</b><span>${L('mã có beta > 1','banks with β > 1')}</span></div></div>
  <div><div class="mq"><span>${chips}${chips}</span></div><div class="mq r" style="border-top:0"><span>${chips2}${chips2}</span></div></div>
  <div class="scr">${L('cuộn để xem ↓','scroll ↓')}</div></div>`;}});
 /* ---------- 2 DATA (flip cards) ---------- */
@@ -121,78 +121,27 @@ upd(el,p){
   const t=ease(seg(p,.5+i*.018,.62+i*.018));c.firstChild.style.transform=`rotateY(${t*180}deg)`;
   const d=D.desc[b],bk=T[b];
   c.querySelector('.a .n').textContent=L('Giá quy về 100','Rebased to 100')+' · '+f(D.px[b][D.px[b].length-1],0);
-  c.querySelector('.b').innerHTML=`<b class="t">${b}</b><span>${L('Biến động năm','Ann. vol')} <b>${pc(d.vol_ann,0)}</b></span><span>${L('Độ nhọn','Kurt.')} <b>${f(d.ku,1)}</b> · ${L('lệch','skew')} <b>${f(d.sk,2)}</b></span>${bk?`<span>β <b style="color:var(--pap)">${f(bk.pb)}</b>→<b style="color:var(--cor)">${f(bk.beta)}</b></span>`:`<span>${L('chỉ số thị trường','market index')}</span>`}`;});}});
-/* ---------- 3 SCATTER ---------- */
-SC.push({id:'scatter',act:1,h:300,lay:'L',ey:['Phát hiện · 1/3','Finding · 1/3'],h2:['Cùng một cổ phiếu, hai độ dốc','One stock, two slopes'],
-steps:[['STB so với VN30 trên chuỗi dùng trong bài gốc: mọi điểm gói trong khoảng 0,992–1,008 quanh mốc 1 và đường hồi quy có độ dốc 0,98.','STB against VN30 on the series used in the source paper: every point sits within 0.992–1.008 around 1 and the fitted slope is 0.98.'],
-['Chuyển sang log lợi suất ln(Pₜ/Pₜ₋₁): đám mây giãn ra đúng cỡ biến động thật, từ −7% đến +7% mỗi ngày.','Switch to log returns ln(Pₜ/Pₜ₋₁): the cloud stretches to the true size of daily moves, −7% to +7%.'],
-['Độ dốc là 1,39. STB khuếch đại biến động của thị trường, trái với kết luận “beta < 1” của bài gốc.','The slope is 1.39. STB amplifies market moves, contradicting the paper’s “β < 1” conclusion.']],
-tech:()=>mathml(sub(mi('r'),mi('i'))+mo('=')+mi('α')+mo('+')+mi('β')+sub(mi('r'),mi('M'))+mo('+')+mi('ε')),
-draw(p){
- const s=D.sc.STB,W=640,H=520,x0=62,x1=620,y0=26,y1=450,e=ease(seg(p,.28,.72));
- const[gx0,gx1]=mm(s.gx),[gy0,gy1]=mm(s.gy),[tx0,tx1]=mm(s.x),[ty0,ty1]=mm(s.y);
- const P=(gx,gy)=>[mp(gx,gx0,gx1,x0,x1),mp(gy,gy0,gy1,y1,y0)],Q=(x,y)=>[mp(x,tx0,tx1,x0,x1),mp(y,ty0,ty1,y1,y0)];
- const mean=a=>a.reduce((u,v)=>u+v,0)/a.length;
- const line=(xs,ys,b,F,x0d,x1d)=>{const mx=mean(xs),my=mean(ys);return[F(x0d,my+b*(x0d-mx)),F(x1d,my+b*(x1d-mx))]};
- const lp=line(s.gx,s.gy,.9799,P,gx0,gx1),lt=line(s.x,s.y,1.3887,Q,tx0,tx1);
- const L1=[lerp(lp[0][0],lt[0][0],e),lerp(lp[0][1],lt[0][1],e),lerp(lp[1][0],lt[1][0],e),lerp(lp[1][1],lt[1][1],e)];
- let pts='';const col=e<.5?'var(--pap)':'var(--cor)';
- for(let i=0;i<s.x.length;i++){const a=P(s.gx[i],s.gy[i]),b=Q(s.x[i],s.y[i]);pts+=`<circle cx="${lerp(a[0],b[0],e).toFixed(1)}" cy="${lerp(a[1],b[1],e).toFixed(1)}" r="2.3"/>`}
- const d1=[Q(tx0,tx0*1),Q(tx1,tx1*1)];
- const beta=lerp(.9799,1.3887,e);
- return `<svg viewBox="0 0 ${W} ${H}"><rect x="${x0}" y="${y0}" width="${x1-x0}" height="${y1-y0}" fill="none" stroke="var(--line)"/>
- <g fill="${col}" opacity=".5">${pts}</g>
- <line x1="${d1[0][0]}" y1="${d1[0][1]}" x2="${d1[1][0]}" y2="${d1[1][1]}" stroke="var(--mut)" stroke-dasharray="5 5" opacity="${e*.8}"/>
- <text x="${x1-6}" y="${d1[1][1]+14}" text-anchor="end" font-size="11" fill="var(--mut)" opacity="${e}">β = 1</text>
- <line x1="${L1[0]}" y1="${L1[1]}" x2="${L1[2]}" y2="${L1[3]}" stroke="${col}" stroke-width="3.5" stroke-linecap="round"/>
- <text x="${x0}" y="${y1+22}" font-size="11" fill="var(--mut)" opacity="${1-e}">${gx0.toFixed(3).replace('.',',')}</text><text x="${x1}" y="${y1+22}" text-anchor="end" font-size="11" fill="var(--mut)" opacity="${1-e}">${gx1.toFixed(3)}</text>
- <text x="${x0}" y="${y1+22}" font-size="11" fill="var(--mut)" opacity="${e}">${pc(tx0,0)}</text><text x="${x1}" y="${y1+22}" text-anchor="end" font-size="11" fill="var(--mut)" opacity="${e}">${pc(tx1,0)}</text>
- <text x="${(x0+x1)/2}" y="${y1+42}" text-anchor="middle" font-size="12" fill="var(--ink)" opacity="${1-e}">VN30: ln Pₜ / ln Pₜ₋₁</text><text x="${(x0+x1)/2}" y="${y1+42}" text-anchor="middle" font-size="12" fill="var(--ink)" opacity="${e}">VN30: ln(Pₜ/Pₜ₋₁)</text>
- <text x="${x0+14}" y="${y0+44}" font-size="46" font-weight="800" fill="${col}">β = ${f(beta)}</text>
- <text x="${x0+14}" y="${y0+66}" font-size="12" fill="var(--mut)">STB · ${L('chuỗi trong bài','paper series')} → ${L('log lợi suất','log return')}</text></svg>`;}});
-/* ---------- 4 X-RAY ---------- */
-SC.push({id:'xray',act:1,h:280,lay:'L',ey:['Phát hiện · 2/3','Finding · 2/3'],h2:['Chuỗi trong bài không phải lợi suất','The paper’s series is not a return'],
-steps:[['Một dòng dữ liệu: EIB ngày 03/01/2020, giá từ 14.750 xuống 14.375 đồng (−2,5%).','One row: EIB on 3 Jan 2020, price from 14,750 to 14,375 (−2.5%).'],
-['Chuỗi trong bài là ln Pₜ / ln Pₜ₋₁, tức tỷ số của hai logarit. Giá trị ≈ 0,997, gần 1 với mọi cổ phiếu bất kể biến động.','The paper’s series is ln Pₜ / ln Pₜ₋₁, a ratio of two logarithms. It sits near 0.997 for any stock whatever its move.'],
-['Lợi suất đúng là ln(Pₜ/Pₜ₋₁) = −2,6%. Hồi quy trên chuỗi đầu nhân beta lên xấp xỉ ln P_M / ln Pᵢ.','The true return is ln(Pₜ/Pₜ₋₁) = −2.6%. Regressing on the first series scales beta by roughly ln P_M / ln Pᵢ.'],
-['Dấu vân tay: với chuỗi dạng gộp, α̂ + β̂ = 1,0000 ở cả 12 mã. “Alpha” in trong bài chỉ là 1 − β.','Fingerprint: on a gross-style series α̂ + β̂ = 1.0000 for all 12 banks. The printed “alpha” is just 1 − β.']],
-tech:()=>mathml(sub(mi('x'),mi('t'))+mo('=')+fr(mi('ln')+sub(mi('P'),mi('t')),mi('ln')+sub(mi('P'),row(mi('t')+mo('−')+mn(1))))+mo('≠')+sub(mi('r'),mi('t'))),
-mount(el){el.innerHTML='<div class="rc"><div class="rw"><span></span><span>'+'</span><span></span></div></div>';},
-upd(el,p){
- const r=D.row,l0=Math.log(r.p0),l1=Math.log(r.p1),m0=Math.log(r.m0),m1=Math.log(r.m1);
- const n=(x,d=5)=>f(x,d);
- const rows=[[L('Mục','Item'),L('Chuỗi trong bài','Paper series'),L('Lợi suất đúng','True return')],
- [L('Giá EIB','EIB price'),'14.750 → 14.375','14.750 → 14.375'],
- [L('Biểu thức','Formula'),'ln Pₜ / ln Pₜ₋₁','ln(Pₜ / Pₜ₋₁)'],
- ['EIB',`<span class="p">${n(l1/l0)}</span>`,`<span class="c">${n(Math.log(r.p1/r.p0))}</span>`],
- ['VN30',`<span class="p">${n(m1/m0)}</span>`,`<span class="c">${n(Math.log(r.m1/r.m0))}</span>`],
- [L('Ý nghĩa','Reads as'),L('≈ 1, gần như không đổi','≈ 1, almost no signal'),L('−2,6% / −0,4% trong ngày','−2.6% / −0.4% on the day')]];
- const th=[.02,.1,.3,.42,.5,.56];
- const rc=el.querySelector('.rc');
- if(!rc.dataset.k||rc.dataset.k!==LANG){rc.dataset.k=LANG;rc.innerHTML=rows.map(r=>`<div class="rw">${r.map(c=>`<span>${c}</span>`).join('')}</div>`).join('')+'<div class="ab">'+B.map(b=>{const a=T[b].pa,bb=T[b].pb;return`<span><b>${b}</b> ${f(a,4)}+${f(bb,4)}=${f(a+bb,4)}</span>`}).join('')+'</div>';}
- rc.querySelectorAll('.rw').forEach((e,i)=>e.classList.toggle('on',p>=th[i]));
- rc.querySelectorAll('.ab span').forEach((e,i)=>e.classList.toggle('on',p>.72+i*.018));}});
+  c.querySelector('.b').innerHTML=`<b class="t">${b}</b><span>${L('Biến động năm','Ann. vol')} <b>${pc(d.vol_ann,0)}</b></span><span>${L('Độ nhọn','Kurt.')} <b>${f(d.ku,1)}</b> · ${L('lệch','skew')} <b>${f(d.sk,2)}</b></span>${bk?`<span>β <b style="color:var(--cor)">${f(bk.beta)}</b></span>`:`<span>${L('chỉ số thị trường','market index')}</span>`}`;});}});
 /* ---------- 5 DUMBBELL ---------- */
-SC.push({id:'dumb',act:2,h:280,lay:'L',ey:['Phát hiện · 3/3','Finding · 3/3'],h2:['Beta nhích qua mốc 1','Betas cross the 1.0 line'],
-steps:[['Chấm đỏ: beta in trong bài. Chấm xanh: beta trên log lợi suất, kèm khoảng tin cậy 95% theo sai số chuẩn HAC.','Red dot: beta printed in the paper. Blue dot: beta on log returns with a 95% HAC confidence interval.'],
-['Tám trên mười hai mã có beta > 1: STB 1,39, TCB 1,29, CTG và MBB 1,25, VPB 1,24, BID 1,14; HDB và TPB sát 1,04.','Eight of twelve exceed 1: STB 1.39, TCB 1.29, CTG and MBB 1.25, VPB 1.24, BID 1.14; HDB and TPB sit near 1.04.'],
-['Kết luận “cổ phiếu ngân hàng kém năng động hơn thị trường” không còn đúng. Chỉ ACB, EIB, VCB và VIB nằm dưới 1.','“Bank stocks are less dynamic than the market” no longer holds. Only ACB, EIB, VCB and VIB stay below 1.']],
+SC.push({id:'dumb',act:1,h:280,lay:'L',ey:['Beta','Beta'],h2:['Beta của 12 ngân hàng','Betas of the 12 banks'],
+steps:[['Beta của từng mã so với VN30 trên log lợi suất, kèm khoảng tin cậy 95% theo sai số chuẩn HAC (Newey–West, 5 độ trễ).','Beta of each stock against VN30 on log returns, with a 95% confidence interval from HAC (Newey–West, 5 lags) standard errors.'],
+['Tám trên mười hai mã có beta > 1: STB 1,39, TCB 1,29, CTG và MBB 1,25, VPB 1,23, BID 1,14; HDB và TPB sát 1,04.','Eight of twelve exceed 1: STB 1.39, TCB 1.29, CTG and MBB 1.25, VPB 1.23, BID 1.14; HDB and TPB sit near 1.04.'],
+['Nhóm ngân hàng tư nhân vốn hóa lớn khuếch đại biến động thị trường; chỉ ACB, EIB, VCB và VIB nằm dưới 1.','The large private banks amplify market moves; only ACB, EIB, VCB and VIB sit below 1.']],
 tech:()=>mathml(sub(row(mi('β')),mi('i'))+mo('=')+fr(mi('Cov')+mo('(')+sub(mi('r'),mi('i'))+mo(',')+sub(mi('r'),mi('M'))+mo(')'),mi('Var')+mo('(')+sub(mi('r'),mi('M'))+mo(')'))),
 draw(p){
  const W=640,H=520,x0=78,x1=612,rs=[...D.t].sort((a,b)=>b.beta-a.beta),X=v=>mp(v,0,1.6,x0,x1),rh=34,y0=40;
  let g='',cnt=0;
- rs.forEach((t,i)=>{const e=ease(seg(p,.14+i*.03,.5+i*.03)),cx=lerp(t.pb,t.beta,e),y=y0+i*rh,ci=eo(seg(p,.8,.95));if(cx>1)cnt++;
+ rs.forEach((t,i)=>{const e=ease(seg(p,.14+i*.03,.5+i*.03)),cx=lerp(0,t.beta,e),y=y0+i*rh,ci=eo(seg(p,.8,.95));if(cx>1)cnt++;
   g+=`<text x="10" y="${y+4}" font-size="13" font-weight="700" fill="var(--ink)">${t.b}</text>
-  <line x1="${X(t.pb)}" y1="${y}" x2="${X(cx)}" y2="${y}" stroke="var(--mut)" stroke-width="2" opacity=".5"/>
   <line x1="${X(t.lo)}" y1="${y}" x2="${X(t.hi)}" y2="${y}" stroke="var(--cor)" stroke-width="7" opacity="${.22*ci}" stroke-linecap="round"/>
-  <circle cx="${X(t.pb)}" cy="${y}" r="6" fill="var(--pap)"/><circle cx="${X(cx)}" cy="${y}" r="7" fill="var(--cor)" stroke="var(--bg)" stroke-width="2"/>
+  <circle cx="${X(cx)}" cy="${y}" r="7" fill="var(--cor)" stroke="var(--bg)" stroke-width="2"/>
   <text x="${x1+4}" y="${y+4}" font-size="11" fill="var(--cor)" opacity="${e}" font-weight="700">${f(cx)}</text>`;});
  const ticks=[0,.4,.8,1.2,1.6].map(v=>`<text x="${X(v)}" y="${y0+12*rh+8}" text-anchor="middle" font-size="11" fill="var(--mut)">${f(v,1)}</text>`).join('');
  return `<svg viewBox="0 0 ${W+30} ${H}"><line x1="${X(1)}" y1="14" x2="${X(1)}" y2="${y0+12*rh-12}" stroke="var(--amb)" stroke-width="2" stroke-dasharray="6 5"/><text x="${X(1)+6}" y="22" font-size="12" fill="var(--amb)" font-weight="700">β = 1</text>${g}${ticks}
  <text x="${x1-4}" y="${H-14}" text-anchor="end" font-size="26" font-weight="800" fill="var(--cor)">${cnt}/12 β &gt; 1</text>
- <circle cx="${x0}" cy="${H-22}" r="5" fill="var(--pap)"/><text x="${x0+10}" y="${H-18}" font-size="11" fill="var(--mut)">${L('trong bài','paper')}</text><circle cx="${x0+90}" cy="${H-22}" r="5" fill="var(--cor)"/><text x="${x0+100}" y="${H-18}" font-size="11" fill="var(--mut)">${L('tính lại ± CI 95%','recomputed ± 95% CI')}</text></svg>`;}});
+ <circle cx="${x0}" cy="${H-22}" r="5" fill="var(--cor)"/><text x="${x0+10}" y="${H-18}" font-size="11" fill="var(--mut)">${L('beta ± CI 95%','beta ± 95% CI')}</text></svg>`;}});
 /* ---------- 6 DIALS ---------- */
-SC.push({id:'dials',act:2,h:240,lay:'B',ey:['Beta đúng','True β'],h2:['Đồng hồ beta','Beta dials'],
+SC.push({id:'dials',act:1,h:240,lay:'B',ey:['Beta đúng','True β'],h2:['Đồng hồ beta','Beta dials'],
 steps:[['Kim chỉ beta trên log lợi suất; cung màu là khoảng tin cậy 95% (sai số chuẩn HAC, Newey–West 5 độ trễ). Vạch đứng là β = 1.','The needle reads beta on log returns; the arc is the 95% interval (HAC, Newey–West, 5 lags). The tick marks β = 1.'],
 ['Hiệu chỉnh Dimson (±1 độ trễ) kéo beta các mã giao dịch thưa về gần 1: EIB 0,58 → 0,68, VIB 0,81 → 0,91. Beta của mã thanh khoản cao gần như không đổi.','Dimson’s lag adjustment (±1 lag) pulls thinly traded names toward 1: EIB 0.58 → 0.68, VIB 0.81 → 0.91. Liquid names barely move.']],
 draw(p){
@@ -209,24 +158,20 @@ draw(p){
   <text x="${cx}" y="${cy+36}" text-anchor="middle" font-size="11" fill="var(--mut)"><tspan font-weight="700" fill="var(--ink)">${b}</tspan> · R² ${f(t.r2)}</text></g>`;});
  return `<svg viewBox="0 0 ${W} ${H}">${g}</svg>`;}});
 /* ---------- 7 RISK ---------- */
-SC.push({id:'risk',act:3,h:260,lay:'R',ey:['Rủi ro','Risk'],h2:['Rủi ro hệ thống chiếm bao nhiêu?','How much is systematic?'],
+SC.push({id:'risk',act:2,h:260,lay:'R',ey:['Rủi ro','Risk'],h2:['Rủi ro hệ thống chiếm bao nhiêu?','How much is systematic?'],
 steps:[['σᵢ² = βᵢ²σ_M² + σ²_εi. Thanh xanh là phần hệ thống (chính là R²), thanh xám là rủi ro riêng của từng mã.','σᵢ² = βᵢ²σ_M² + σ²_εi. Blue is the systematic part (the R²), grey the stock-specific part.'],
 ['MBB có R² cao nhất (0,67); EIB thấp nhất (0,11): gần 90% biến động của EIB là yếu tố riêng, không giải thích được bằng VN30.','MBB has the highest R² (0.67), EIB the lowest (0.11): about 90% of EIB’s variance is stock-specific, not explained by VN30.'],
-['Bài gốc dùng σ_M = 0,20%/ngày của chuỗi tỷ số log; độ lệch chuẩn thật của VN30 là 1,42%. Gấp ≈ 7 lần: mọi mức rủi ro tuyệt đối trong bài bị đánh giá thấp.','The paper uses σ_M = 0.20%/day from the log-ratio series; the true VN30 daily s.d. is 1.42%, about 7× larger, so every absolute risk level in the paper is understated.']],
+['Độ lệch chuẩn ngày của VN30 là 1,42%. Rủi ro hệ thống của mỗi mã là β·σ_M, ví dụ STB: 1,39 × 1,42% ≈ 1,97% mỗi ngày.','The daily standard deviation of VN30 is 1.42%. Each stock’s systematic risk is β·σ_M, for example STB: 1.39 × 1.42% ≈ 1.97% per day.']],
 tech:()=>mathml(sup(mi('R'),mn(2))+mo('=')+fr(sup(sub(mi('β'),mi('i')),mn(2))+sup(sub(mi('σ'),mi('M')),mn(2)),sup(sub(mi('σ'),mi('i')),mn(2)))),
 draw(p){
  const rs=[...D.t].sort((a,b)=>b.r2-a.r2),W=640,H=500,x0=64,bw=330,rh=33,y0=26,e=eo(seg(p,.05,.5)),v=ease(seg(p,.55,.9));
  let g='';rs.forEach((t,i)=>{const y=y0+i*rh,w=bw*t.r2*e,ee=Math.min(1,e*1.2);
   g+=`<text x="6" y="${y+16}" font-size="13" font-weight="700">${t.b}</text><rect x="${x0}" y="${y}" width="${bw}" height="22" rx="4" fill="var(--line)" opacity=".55"/><rect x="${x0}" y="${y}" width="${w}" height="22" rx="4" fill="var(--cor)"/><text x="${x0+w+6}" y="${y+16}" font-size="12" fill="var(--ink)" font-weight="700">${f(t.r2*e)}</text>`});
- const bx=470,base=440,hp=300*(D.sigM_paper/D.sigM),hh=300,a=hp*v,b2=hh*v;
- g+=`<text x="${bx+60}" y="26" text-anchor="middle" font-size="12" fill="var(--mut)">σ_M ${L('mỗi ngày','daily')}</text>
- <rect x="${bx}" y="${base-a}" width="52" height="${a}" fill="var(--pap)" rx="4"/><rect x="${bx+72}" y="${base-b2}" width="52" height="${b2}" fill="var(--cor)" rx="4"/>
- <text x="${bx+26}" y="${base+18}" text-anchor="middle" font-size="12" fill="var(--pap)" font-weight="700">${pc(D.sigM_paper,2)}</text><text x="${bx+98}" y="${base+18}" text-anchor="middle" font-size="12" fill="var(--cor)" font-weight="700">${pc(D.sigM,2)}</text>
- <text x="${bx+26}" y="${base+34}" text-anchor="middle" font-size="10" fill="var(--mut)">${L('bài gốc','paper')}</text><text x="${bx+98}" y="${base+34}" text-anchor="middle" font-size="10" fill="var(--mut)">${L('thực tế','actual')}</text>
- <text x="${bx+62}" y="${base-b2-10}" text-anchor="middle" font-size="26" font-weight="800" fill="var(--amb)" opacity="${v}">×${f(D.sigM/D.sigM_paper,1)}</text>`;
+ const bx=500,base=440,hh=300,b2=hh*v;
+ g+=`<text x="${bx+26}" y="26" text-anchor="middle" font-size="12" fill="var(--mut)">σ_M ${L('mỗi ngày','daily')}</text><rect x="${bx}" y="${base-b2}" width="52" height="${b2}" fill="var(--cor)" rx="4"/><text x="${bx+26}" y="${base+18}" text-anchor="middle" font-size="13" fill="var(--cor)" font-weight="700">${pc(D.sigM,2)}</text><text x="${bx+26}" y="${base+34}" text-anchor="middle" font-size="10" fill="var(--mut)">VN30</text>`;
  return `<svg viewBox="0 0 ${W} ${H}">${g}</svg>`;}});
 /* ---------- 8 HEATMAP ---------- */
-SC.push({id:'heat',act:3,h:260,lay:'L',ey:['Kiểm định','Test'],h2:['Giả định chỉ số đơn có đứng vững?','Does the single-index assumption hold?'],
+SC.push({id:'heat',act:2,h:260,lay:'L',ey:['Kiểm định','Test'],h2:['Giả định chỉ số đơn có đứng vững?','Does the single-index assumption hold?'],
 steps:[['Mô hình giả định phần dư giữa các ngân hàng không tương quan. Breusch–Pagan LM = 996,8 (df = 66, p < 10⁻¹⁶⁵): giả định bị bác bỏ; tương quan phần dư trung bình 0,083.','The model assumes bank residuals are uncorrelated. Breusch–Pagan LM = 996.8 (df = 66, p < 10⁻¹⁶⁵): rejected, mean residual correlation 0.083.'],
 ['Thêm nhân tố ngành (chỉ số các ngân hàng còn lại, trực giao với VN30): LM giảm còn 425, tương quan trung bình −0,04. Nhân tố có ý nghĩa với 10/12 mã (trừ VCB và VPB).','Add a sector factor (the other banks’ index, orthogonal to VN30): LM falls to 425, mean correlation −0.04. The factor is significant for 10 of 12 banks (not VCB, VPB).'],
 ['Kiểm định vẫn bác bỏ ở mức 425: còn cấu trúc phụ thuộc mà hai nhân tố chưa bắt hết.','The test still rejects at 425: some dependence remains beyond two factors.']],
@@ -240,7 +185,7 @@ draw(p){
  <text x="${x0}" y="${y0+12*cs+56}" font-size="11" fill="var(--mut)">${t<.5?L('Phần dư của mô hình chỉ số đơn','Single-index residuals'):L('Phần dư sau khi thêm nhân tố ngành','Residuals after adding the sector factor')}</text>
  <rect x="${x0+420}" y="${y0+12*cs+22}" width="12" height="12" rx="3" fill="var(--pap)"/><text x="${x0+436}" y="${y0+12*cs+32}" font-size="10" fill="var(--mut)">ρ &gt; 0</text><rect x="${x0+476}" y="${y0+12*cs+22}" width="12" height="12" rx="3" fill="var(--cor)"/><text x="${x0+492}" y="${y0+12*cs+32}" font-size="10" fill="var(--mut)">ρ &lt; 0</text></svg>`;}});
 /* ---------- 9 SLOPE ---------- */
-SC.push({id:'slope',act:3,h:240,lay:'R',ey:['Ổn định','Stability'],h2:['Beta không đứng yên','Beta moves'],
+SC.push({id:'slope',act:2,h:240,lay:'R',ey:['Ổn định','Stability'],h2:['Beta không đứng yên','Beta moves'],
 steps:[['Ước lượng riêng cho ba giai đoạn: 2020–21, 2022 và 2023–24. Mỗi đường là một cổ phiếu.','Estimated separately for three windows: 2020–21, 2022 and 2023–24. Each line is one stock.'],
 ['VIB đi từ 0,47 lên 1,18 rồi 1,05; EIB từ 0,45 lên 0,95; STB đạt 1,57 trong 2022 rồi 1,27. Beta một kỳ không dùng thẳng cho kỳ sau.','VIB goes 0.47 → 1.18 → 1.05; EIB 0.45 → 0.95; STB peaks at 1.57 in 2022 then 1.27. A one-period beta cannot be carried forward unchecked.']],
 draw(p){
@@ -255,7 +200,7 @@ draw(p){
   if(hi[b]||true){g+=`<text x="${xs[0]-10}" y="${Y(v[0])+4}" text-anchor="end" font-size="${hi[b]?12:9}" fill="${hi[b]?c:'var(--mut)'}" font-weight="${hi[b]?800:400}" opacity="${o}">${b}</text><text x="${xs[2]+12}" y="${Y(v[2])+4}" font-size="${hi[b]?12:9}" fill="${hi[b]?c:'var(--mut)'}" font-weight="${hi[b]?800:400}" opacity="${s2>.6?o:0}">${f(v[2])}</text>`}});
  return `<svg viewBox="0 0 ${W} ${H}">${g}</svg>`;}});
 /* ---------- 10 EGP ---------- */
-SC.push({id:'egp',act:4,h:300,lay:'L',ey:['Danh mục','Portfolio'],h2:['Tối ưu EGP có thắng chia đều?','Does EGP beat equal weight?'],
+SC.push({id:'egp',act:3,h:300,lay:'L',ey:['Danh mục','Portfolio'],h2:['Tối ưu EGP có thắng chia đều?','Does EGP beat equal weight?'],
 steps:[['Phương pháp Elton–Gruber–Padberg chọn 5 mã trên dữ liệu đến hết 2022: VPB 42%, STB 24%, VIB 18%, ACB 10%, EIB 7%.','Elton–Gruber–Padberg picks 5 names on data through 2022: VPB 42%, STB 24%, VIB 18%, ACB 10%, EIB 7%.'],
 ['Ngoài mẫu 2023–07/2024: danh mục EGP lãi 12,0%/năm, chia đều 17,2%, VN30 17,0%.','Out of sample, 2023 to Jul 2024: EGP earns 12.0% a year, equal weight 17.2%, VN30 17.0%.'],
 ['Sharpe ngoài mẫu: EGP 0,55, chia đều 0,89, VN30 0,98. Khoảng tin cậy 95% của chênh lệch (EGP − chia đều) là [−1,16; 0,51], chứa 0: không có bằng chứng tối ưu hóa tạo thêm giá trị.','Out-of-sample Sharpe: EGP 0.55, equal weight 0.89, VN30 0.98. The 95% interval of the difference (EGP − equal weight) is [−1.16, 0.51], containing 0: no evidence that optimising adds value.']],
@@ -278,13 +223,13 @@ draw(p){
  <line x1="${cx(sc.sharpe_diff_ci[0])}" y1="${ciy+10}" x2="${cx(sc.sharpe_diff_ci[1])}" y2="${ciy+10}" stroke="var(--pap)" stroke-width="8" stroke-linecap="round"/>
  <text x="${cx(sc.sharpe_diff_ci[0])}" y="${ciy+38}" text-anchor="middle" font-size="11" fill="var(--pap)">${f(sc.sharpe_diff_ci[0])}</text><text x="${cx(sc.sharpe_diff_ci[1])}" y="${ciy+38}" text-anchor="middle" font-size="11" fill="var(--pap)">${f(sc.sharpe_diff_ci[1])}</text><text x="${cx(0)}" y="${ciy+38}" text-anchor="middle" font-size="11" fill="var(--ink)">0</text></g></svg>`;}});
 /* ---------- 11 CLOSE ---------- */
-SC.push({id:'close',act:5,h:200,lay:'F',ey:['Kết','Close'],h2:['Điều rút ra','Takeaways'],steps:[],
+SC.push({id:'close',act:4,h:200,lay:'F',ey:['Kết','Close'],h2:['Điều rút ra','Takeaways'],steps:[],
 mount(el){},
 upd(el,p){
- const it=[[L('Dữ liệu trước mô hình','Data before model'),L('Một biến “lợi suất” sai định nghĩa làm đảo kết luận: beta ngân hàng không còn < 1, 8/12 mã vượt 1.','A mis-defined “return” flips the conclusion: bank betas are no longer < 1, 8 of 12 exceed 1.')],
+ const it=[[L('Ngân hàng khuếch đại thị trường','Banks amplify the market'),L('8/12 mã có beta > 1, dẫn đầu là STB 1,39 và TCB 1,29; chỉ ACB, EIB, VCB, VIB dưới 1.','8 of 12 banks have β > 1, led by STB 1.39 and TCB 1.29; only ACB, EIB, VCB and VIB are below 1.')],
  [L('Giả định cần được kiểm','Test the assumptions'),L('Phần dư tương quan chéo (LM 997 → 425 khi thêm nhân tố ngành) và beta đổi theo giai đoạn: mô hình đơn chỉ là điểm xuất phát.','Residuals are cross-correlated (LM 997 → 425 with a sector factor) and betas drift by period: the single index is a starting point only.')],
  [L('Tối ưu không tự sinh lời','Optimisation is not alpha'),L('EGP kém chia đều và VN30 ngoài mẫu (Sharpe 0,55 so với 0,89 và 0,98), khoảng tin cậy chứa 0.','EGP trails equal weight and VN30 out of sample (Sharpe 0.55 vs 0.89 and 0.98), with an interval containing 0.')]];
- const h=el.dataset.l!==LANG;if(h){el.dataset.l=LANG;el.innerHTML=`<div style="width:100%"><div class="cl">${it.map(c=>`<div><h3>${c[0]}</h3><p>${c[1]}</p></div>`).join('')}</div><p class="ref">${L('Phân tích học thuật, không phải khuyến nghị đầu tư. Dữ liệu và mã: ','Academic analysis, not investment advice. Data and code: ')}<a href="https://github.com/lenguyenquocthang/single-index-model-vn-banks">GitHub</a> · <a href="../report/">${L('Báo cáo','Report')}</a>. ${L('Phương pháp: OLS với sai số HAC (Newey–West), Dimson/Blume, kiểm định Breusch–Pagan LM, EGP với bootstrap theo khối. Mục “Đối chiếu số liệu” của báo cáo liệt kê từng điểm khác biệt giữa bài gốc và kết quả tính lại.','Methods: OLS with HAC (Newey–West) errors, Dimson/Blume adjustments, Breusch–Pagan LM test, EGP with block bootstrap. The “Data reconciliation” section of the report lists every difference between the source paper and the recomputation.')}</p></div>`}
+ const h=el.dataset.l!==LANG;if(h){el.dataset.l=LANG;el.innerHTML=`<div style="width:100%"><div class="cl">${it.map(c=>`<div><h3>${c[0]}</h3><p>${c[1]}</p></div>`).join('')}</div><p class="ref">${L('Phân tích học thuật, không phải khuyến nghị đầu tư. Dữ liệu và mã: ','Academic analysis, not investment advice. Data and code: ')}<a href="https://github.com/lenguyenquocthang/single-index-model-vn-banks">GitHub</a> · <a href="../report/">${L('Báo cáo','Report')}</a>. ${L('Phương pháp: OLS với sai số HAC (Newey–West), Dimson/Blume, kiểm định Breusch–Pagan LM, EGP với bootstrap theo khối. Phụ lục của báo cáo đối chiếu số liệu với nghiên cứu gốc.','Methods: OLS with HAC (Newey–West) errors, Dimson/Blume adjustments, Breusch–Pagan LM test, EGP with block bootstrap. The “Data reconciliation” section of the report lists every difference between the source paper and the recomputation.')}</p></div>`}
  el.querySelectorAll('.cl>div').forEach((e,i)=>e.classList.toggle('on',p>.12+i*.18));}});
 const HDR=56;const root=document.getElementById('app');
 const hd=document.getElementById('hd');
@@ -296,10 +241,10 @@ const secs=SC.map(s=>{
  if(s.mount)s.mount(o.vz);return o;});
 function text(){
  document.documentElement.lang=LANG;
- document.getElementById('br').textContent=L('Beta ngân hàng · tính lại','Bank betas · recomputed');
+ document.getElementById('br').textContent=L('Beta ngân hàng · VN30','Bank betas · VN30');
  document.getElementById('bTc').textContent=L('Kỹ thuật','Technical');document.getElementById('bLg').textContent=LANG==='vi'?'EN':'VI';
  document.getElementById('acts').innerHTML=ACTS.map((a,i)=>`<i data-i="${i}" style="--c:var(${a[2]})">${L(a[0],a[1])}</i>`).join('');
- document.title=L('Beta cổ phiếu ngân hàng Việt Nam, tính lại · Bản trình bày','Vietnamese bank stock betas, recomputed · Presentation');
+ document.title=L('Rủi ro hệ thống của cổ phiếu ngân hàng Việt Nam · Bản trình bày','Systematic risk of Vietnamese bank stocks · Presentation');
  secs.forEach(o=>{const s=o.s;if(!o.tx)return;
   o.tx.querySelector('.ey').textContent=L(s.ey[0],s.ey[1]);o.tx.querySelector('h2').textContent=L(s.h2[0],s.h2[1]);
   o.tx.querySelector('.stw').innerHTML=s.steps.map(t=>`<div class="stp">${L(t[0],t[1])}</div>`).join('');
