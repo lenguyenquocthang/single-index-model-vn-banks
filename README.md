@@ -1,33 +1,42 @@
-# Single-index model for 12 Vietnamese bank stocks
+# Systematic Risk of Vietnamese Bank Stocks: Single-Index Model vs VN30, 2020–2024
 
-> Part of my [quant portfolio](https://github.com/lenguyenquocthang/quant-portfolio).
+Re-estimation of Sharpe's single-index model (SIM) for **12 listed bank stocks against VN30 (2 Jan 2020 – 19 Jul 2024, 1,134 daily returns)**, with HAC inference, residual-dependence tests, subperiod stability and an out-of-sample test of the Elton–Gruber–Padberg (EGP) portfolio. Part of my [quant portfolio](https://github.com/lenguyenquocthang/quant-portfolio).
 
-Re-estimation of a Sharpe single-index model (SIM) and an Elton–Gruber–Padberg (EGP) optimal portfolio of 12 bank stocks against VN30 (1,134 daily observations).
+**Pages:** [Landing](https://lenguyenquocthang.github.io/single-index-model-vn-banks/) · [Scroll presentation](https://lenguyenquocthang.github.io/single-index-model-vn-banks/presentation/) · [Research report](https://lenguyenquocthang.github.io/single-index-model-vn-banks/report/)
 
-## Data
-Not included (price and return sheets of a workbook: sheet `TSLN` = provided returns, sheet `Giá` = prices). Download daily closing prices for ACB, BID, CTG, EIB, HDB, MBB, STB, TCB, TPB, VCB, VIB, VPB and VN30 from any market-data vendor.
+## Model
+
+$$r_{it}=\alpha_i+\beta_i\,r_{Mt}+\varepsilon_{it},\qquad \sigma_i^2=\beta_i^2\sigma_M^2+\sigma_{\varepsilon i}^2,\qquad r_{it}=\ln\frac{P_{it}}{P_{i,t-1}}$$
+
+Betas by OLS with Newey–West (5 lags) standard errors; Dimson ($t\pm1$) and Blume ($\tfrac23\beta+\tfrac13$) adjustments; Breusch–Pagan $LM=T\sum_{i<j}\hat\rho_{ij}^2\sim\chi^2(66)$ for residual cross-correlation; two-index model with an orthogonalised other-banks factor; EGP trained to 2022, tested 2023–Jul 2024 with a block bootstrap for the Sharpe difference.
+
+## Main findings
+| Item | Result |
+|---|---|
+| Source series | The "return" in the source tables is $\ln P_t/\ln P_{t-1}$ (matches to $2\times10^{-16}$), not $\ln(P_t/P_{t-1})$; it forces $\hat\alpha+\hat\beta=1$ |
+| Betas | 8 of 12 exceed 1 (STB 1.39, TCB 1.29, CTG/MBB 1.25, VPB 1.23, BID 1.14, HDB/TPB 1.04); the paper reports 0 of 12 |
+| Market volatility | $\sigma_M=1.42\%$/day, about 7× the value used in the source's risk table |
+| Alpha | −4.5 to +4.9 bps/day, none significant ($\lvert t\rvert<1$) |
+| Residuals | $LM=996.8$, $p\approx10^{-166}$: SIM independence rejected; sector factor significant for 10/12 banks and cuts $LM$ to 425 |
+| Stability | Betas move across 2020–21, 2022, 2023–24 (e.g. VIB 0.47 → 1.18 → 1.05) |
+| EGP out of sample | Sharpe 0.55 vs 0.89 (equal weight) and 0.98 (VN30); difference CI [−1.16, 0.51] contains 0 |
+
+## Limitations
+All 12 stocks are VN30 members (large-cap selection) and VN30 contains these banks, so betas carry a mechanical component. Prices are used as supplied. The out-of-sample window is 18 months. Statistical associations only, not investment advice. Ten print inconsistencies in the source study are listed in `ERRATA.md` and the report appendix.
+
+## Repository
+| Path | Content |
+|---|---|
+| `presentation/` | Scroll presentation (VI/EN, light/dark) |
+| `report/` | Research report (VI/EN) with data reconciliation appendix |
+| `data/` | Daily closing prices of 12 banks and VN30, plus the series printed in the source |
+| `reestimation/` | Python code and results (JSON, figures) |
+| `ERRATA.md`, `SUMMARY.md` | Corrections; one-page summary |
+
 ```bash
-python run.py --data prices.xlsx --out results && python make_figures.py
+cd reestimation && pip install -r requirements.txt
+python run.py --data ../data/prices_12_bank_stocks_vn30.xlsx --out results
+python make_figures.py
 ```
 
-## The key finding: the "return" series was not a return
-The sheet used as the return series equals ln P<sub>t</sub> / ln P<sub>t−1</sub> (a ratio of logs), not ln(P<sub>t</sub>/P<sub>t−1</sub>). Regressing it on the index multiplies each beta by roughly ln P<sub>M</sub> / ln P<sub>i</sub>, so the betas in the original paper were distorted (the code verifies the identity to machine precision and the ratio of the two beta sets).
-
-## Corrected betas (log returns vs VN30, HAC SE)
-| Bank | β | R² | Bank | β | R² |
-|---|---|---|---|---|---|
-| STB | 1.39 | 0.57 | VPB | 1.23 | 0.59 |
-| TCB | 1.29 | 0.37 | BID | 1.14 | 0.51 |
-| CTG | 1.25 | 0.59 | TPB / HDB | 1.04 | 0.36 / 0.47 |
-| MBB | 1.25 | 0.67 | VIB / ACB | 0.81 | 0.21 / 0.31 |
-| VCB | 0.75 | 0.36 | EIB | 0.58 | 0.11 |
-
-Eight of twelve betas exceed 1. Dimson and Blume adjustments are in the JSON.
-
-## Is the single-index assumption valid?
-No. The residuals are strongly cross-correlated: Breusch–Pagan LM = 996.8 (df = 66, p < 1e−165), mean residual correlation 0.083. A two-index model (VN30 + an orthogonalised sector index) removes most of it (LM falls to 425; mean correlation −0.04) and the sector factor is highly significant for every bank. Betas are also unstable across 2020–21, 2022 and 2023–24 subperiods.
-
-## EGP optimal portfolio (train ≤ 2022, test 2023–24)
-Out-of-sample Sharpe: **EGP 0.55**, equal-weight 0.89, VN30 0.98. A block bootstrap of the Sharpe difference (EGP − equal weight) gives a 95% CI of [−1.16, 0.51]: no evidence that optimisation adds value out of sample.
-
-![betas](results/figures/fig1_betas.png)
+Academic analysis, not investment advice.
