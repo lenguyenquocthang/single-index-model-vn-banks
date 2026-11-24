@@ -1,6 +1,6 @@
-# Errata: source study vs recomputation
+# Reconciliation with the source study
 
-| # | Source prints | Recomputed | Effect |
+| # | Source prints | This repository | Effect |
 |---|---|---|---|
 | R1 | "Return" = ln Pₜ / ln Pₜ₋₁ (sheet TSLN) | log return ln(Pₜ/Pₜ₋₁) | 8/12 betas > 1 instead of 0/12 |
 | R2 | "Alpha" 0.02–0.60, α+β=1 for all banks | α −4.5…+4.9 bps/day, all insignificant | printed alpha is 1 − β |

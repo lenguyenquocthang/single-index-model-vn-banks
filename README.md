@@ -1,6 +1,6 @@
 # Systematic Risk of Vietnamese Bank Stocks: Single-Index Model vs VN30, 2020–2024
 
-Re-estimation of Sharpe's single-index model (SIM) for **12 listed bank stocks against VN30 (2 Jan 2020 – 19 Jul 2024, 1,134 daily returns)**, with HAC inference, residual-dependence tests, subperiod stability and an out-of-sample test of the Elton–Gruber–Padberg (EGP) portfolio. Part of my [quant portfolio](https://github.com/lenguyenquocthang/quant-portfolio).
+Sharpe's single-index model (SIM) for **12 listed bank stocks against VN30 (2 Jan 2020 – 19 Jul 2024, 1,134 daily returns)**, with HAC inference, residual-dependence tests, subperiod stability and an out-of-sample test of the Elton–Gruber–Padberg (EGP) portfolio. Part of my [quant portfolio](https://github.com/lenguyenquocthang/quant-portfolio).
 
 **Pages:** [Landing](https://lenguyenquocthang.github.io/single-index-model-vn-banks/) · [Scroll presentation](https://lenguyenquocthang.github.io/single-index-model-vn-banks/presentation/) · [Research report](https://lenguyenquocthang.github.io/single-index-model-vn-banks/report/)
 
@@ -13,16 +13,16 @@ Betas by OLS with Newey–West (5 lags) standard errors; Dimson ($t\pm1$) and Bl
 ## Main findings
 | Item | Result |
 |---|---|
-| Source series | The "return" in the source tables is $\ln P_t/\ln P_{t-1}$ (matches to $2\times10^{-16}$), not $\ln(P_t/P_{t-1})$; it forces $\hat\alpha+\hat\beta=1$ |
-| Betas | 8 of 12 exceed 1 (STB 1.39, TCB 1.29, CTG/MBB 1.25, VPB 1.23, BID 1.14, HDB/TPB 1.04); the paper reports 0 of 12 |
-| Market volatility | $\sigma_M=1.42\%$/day, about 7× the value used in the source's risk table |
+| Sample | 12 bank stocks, 1,134 daily log returns; ADF rejects a unit root in returns, JB rejects normality for all series |
+| Betas | 8 of 12 exceed 1 (STB 1.39, TCB 1.29, CTG/MBB 1.25, VPB 1.23, BID 1.14, HDB/TPB 1.04) |
+| Risk split | $\sigma_M=1.42\%$/day; $R^2$ ranges from 0.11 (EIB) to 0.67 (MBB) |
 | Alpha | −4.5 to +4.9 bps/day, none significant ($\lvert t\rvert<1$) |
 | Residuals | $LM=996.8$, $p\approx10^{-166}$: SIM independence rejected; sector factor significant for 10/12 banks and cuts $LM$ to 425 |
 | Stability | Betas move across 2020–21, 2022, 2023–24 (e.g. VIB 0.47 → 1.18 → 1.05) |
 | EGP out of sample | Sharpe 0.55 vs 0.89 (equal weight) and 0.98 (VN30); difference CI [−1.16, 0.51] contains 0 |
 
 ## Limitations
-All 12 stocks are VN30 members (large-cap selection) and VN30 contains these banks, so betas carry a mechanical component. Prices are used as supplied. The out-of-sample window is 18 months. Statistical associations only, not investment advice. Ten print inconsistencies in the source study are listed in `ERRATA.md` and the report appendix.
+All 12 stocks are VN30 members (large-cap selection) and VN30 contains these banks, so betas carry a mechanical component. Prices are used as supplied. The out-of-sample window is 18 months. Statistical associations only, not investment advice. The report appendix and `ERRATA.md` reconcile these results with the tables printed in the source study.
 
 ## Repository
 | Path | Content |
@@ -31,7 +31,7 @@ All 12 stocks are VN30 members (large-cap selection) and VN30 contains these ban
 | `report/` | Research report (VI/EN) with data reconciliation appendix |
 | `data/` | Daily closing prices of 12 banks and VN30, plus the series printed in the source |
 | `reestimation/` | Python code and results (JSON, figures) |
-| `ERRATA.md`, `SUMMARY.md` | Corrections; one-page summary |
+| `ERRATA.md`, `SUMMARY.md` | Reconciliation with the source study; one-page summary |
 
 ```bash
 cd reestimation && pip install -r requirements.txt
